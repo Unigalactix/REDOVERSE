@@ -66,34 +66,3 @@ Zan's society is segregated into distinct regions, each with its primary inhabit
 *   **Hybrid Aqua** beings reside along the coast of the Zan Region.
 *   **Pure-breed Aqua** beings are found along the coast of the Death Region.
 *   A classification process exists for "Artificial Aquinas" based on their skin's reaction to being burned. Natural Aquinas are immune. The outcome of this test determines whether they live on the coast or inland with their genetic parents.
----
-
-## Development & Deployment
-
-### Local Development
-
-This project is set up using Vite for a fast development experience.
-
-1.  **Install Dependencies**: You'll need Node.js and npm installed. Open your terminal in the project directory and run:
-    ```bash
-    npm install
-    ```
-2.  **Run Development Server**: To start the local development server with live reloading, run:
-    ```bash
-    npm run dev
-    ```
-
-### Automated Deployment to GitHub Pages
-
-This project is configured for automated deployment to GitHub Pages using GitHub Actions. Every time you push a change to the `main` branch, a process will automatically build the project and deploy the result.
-
-#### One-Time Setup
-
-You just need to enable GitHub Pages in your repository settings **once**:
-
-1.  Go to your repository on GitHub.
-2.  Click on the **Settings** tab.
-3.  In the left sidebar, click on **Pages**.
-4.  Under "Build and deployment," for the **Source**, select **GitHub Actions**.
-5.  Push a change to your `main` branch to trigger the first deployment. You can monitor its progress in the "Actions" tab of your repository.
-6.  Once the deployment is successful, your site will be live at the URL provided in the Pages settings (e.g., `https://<your-username>.github.io/<your-repo-name>/`).
