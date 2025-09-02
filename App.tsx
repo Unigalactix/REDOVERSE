@@ -940,16 +940,14 @@ const App: React.FC = () => {
 
   return (
     <>
-    <div className="min-h-screen bg-black text-gray-300 p-4 sm:p-8 font-sans flex flex-col items-center">
-      <div className="max-w-6xl w-full rounded-2xl shadow-2xl bg-gray-950 border border-gray-800 overflow-hidden">
-        <header className="text-center p-8 bg-black border-b border-gray-800">
+    <div className="min-h-screen bg-black text-gray-300 p-4 sm:p-8 font-sans">
+      <div className="max-w-7xl w-full mx-auto space-y-8">
+        <header className="text-center p-8 bg-gray-950 rounded-2xl border border-gray-800">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-100 tracking-tight">The Redo Universe</h1>
           <p className="mt-2 text-gray-500 text-lg italic">A new beginning, 34 light-years from Earth.</p>
         </header>
-
-        <main className="p-4 sm:p-8 space-y-12">
           
-          <section className="border-b border-gray-800 pb-8">
+          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
             <h2 className="text-3xl font-bold text-gray-200 mb-4">Orbital Simulation</h2>
             <p className="text-gray-400 mb-4">
               Use your mouse to zoom and pan. Click on a sun, planet, or moon to learn more.
@@ -1006,7 +1004,7 @@ const App: React.FC = () => {
             </div>
           </section>
 
-          <section className="border-b border-gray-800 pb-8">
+          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
             <h2 className="text-3xl font-bold text-gray-200 mb-4">Zan News Feed</h2>
             <p className="text-gray-400 mb-6">Latest dispatches and temporal readings from across the planet.</p>
              <div className="grid md:grid-cols-2 gap-8 items-start">
@@ -1042,7 +1040,7 @@ const App: React.FC = () => {
              </div>
           </section>
 
-          <section className="border-b border-gray-800 pb-8">
+          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
              <h2 className="text-3xl font-bold text-gray-200 mb-4">Celestial Body Viewer</h2>
               <div className="mb-6">
                 <label htmlFor="celestial-select" className="block text-gray-400 mb-2 font-semibold">Select a body to inspect:</label>
@@ -1081,7 +1079,7 @@ const App: React.FC = () => {
             </div>
           </section>
 
-          <section className="border-b border-gray-800 pb-8">
+          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
             <h2 className="text-3xl font-bold text-gray-200 mb-4">Economy & Currency</h2>
             <p className="text-gray-400 mb-6">The Zanian economy is a complex system of advanced digital transactions, resource bartering, and interstellar trade, all loosely tied together by the official currency: the <span className="font-bold text-white">Lumin (L)</span>. A unit of crystallized energy, Lumin is minted and controlled by the Zan Zanians, creating a major point of contention across the planet.</p>
             <div className="grid md:grid-cols-3 gap-8">
@@ -1100,7 +1098,7 @@ const App: React.FC = () => {
             </div>
           </section>
           
-          <section className="border-b border-gray-800 pb-8">
+          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
             <h2 className="text-3xl font-bold text-gray-200 mb-4">Key Figures & Factions</h2>
             <div className="grid md:grid-cols-2 gap-8 mb-8">
               <div className="bg-black/50 rounded-lg p-6 border border-gray-800">
@@ -1162,7 +1160,7 @@ const App: React.FC = () => {
             </div>
           </section>
 
-          <section className="border-b border-gray-800 pb-8">
+          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
             <h2 className="text-3xl font-bold text-gray-200 mb-4">Zan's Societal Structure & Regions</h2>
             <div className="grid md:grid-cols-2 gap-8">
               <div>
@@ -1184,7 +1182,7 @@ const App: React.FC = () => {
             </div>
           </section>
           
-          <section className="border-b border-gray-800 pb-8">
+          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
             <h2 className="text-3xl font-bold text-gray-200 mb-4">Zan's Celestial & Temporal Structure</h2>
             <div className="grid md:grid-cols-2 gap-8">
               <div>
@@ -1203,7 +1201,7 @@ const App: React.FC = () => {
             </div>
           </section>
 
-          <section>
+          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
             <h2 className="text-3xl font-bold text-gray-200 mb-4">Other Planets in the Redo Universe</h2>
             <div className="grid md:grid-cols-2 gap-8">
               <div>
@@ -1226,8 +1224,6 @@ const App: React.FC = () => {
               Casa and Judo are considered "twin planets," similar in size and appearance.
             </p>
           </section>
-
-        </main>
       </div>
     </div>
     <Modal isOpen={isCalendarOpen} onClose={() => setCalendarOpen(false)}>

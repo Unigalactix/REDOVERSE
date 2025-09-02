@@ -66,3 +66,45 @@ Zan's society is segregated into distinct regions, each with its primary inhabit
 *   **Hybrid Aqua** beings reside along the coast of the Zan Region.
 *   **Pure-breed Aqua** beings are found along the coast of the Death Region.
 *   A classification process exists for "Artificial Aquinas" based on their skin's reaction to being burned. Natural Aquinas are immune. The outcome of this test determines whether they live on the coast or inland with their genetic parents.
+---
+
+## Development & Deployment
+
+This project is set up using Vite for a fast development experience and an optimized production build.
+
+### Getting Started
+
+1.  **Install Dependencies**: You'll need Node.js and npm installed. Open your terminal in the project directory and run:
+    ```bash
+    npm install
+    ```
+2.  **Run Development Server**: To start the local development server with live reloading, run:
+    ```bash
+    npm run dev
+    ```
+
+### Building for Production
+
+To create a production-ready version of the app, run:
+```bash
+npm run build
+```
+This command bundles all the code into a `dist` folder, which is optimized and ready for deployment.
+
+### Deployment to GitHub Pages
+
+You can host this project for free using GitHub Pages.
+
+1.  **Build the Project**: Run `npm run build` to create the `dist` directory.
+
+2.  **Push to GitHub**: Make sure your project is a GitHub repository and you have pushed all your code. You may need to commit the `dist` directory if it's in your `.gitignore` file.
+
+3.  **Configure GitHub Pages**:
+    *   Go to your repository on GitHub.
+    *   Click on the **Settings** tab.
+    *   In the left sidebar, click on **Pages**.
+    *   Under "Build and deployment," for the **Source**, select **Deploy from a branch**.
+    *   For the **Branch**, select your main branch (e.g., `main` or `master`) and choose the `/dist` folder from the dropdown menu.
+    *   Click **Save**.
+
+4.  **Done!**: After a few minutes, your site will be live at the URL provided by GitHub Pages (e.g., `https://<your-username>.github.io/<your-repo-name>/`).
