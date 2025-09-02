@@ -598,14 +598,19 @@ const App: React.FC = () => {
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
             ctx.fill();
         } else {
-             for (let i = 0; i < width; i++) {
-                const x = i - centerX;
-                if (x * x < radius * radius) {
-                    const y = Math.sqrt(radius * radius - x * x);
-                    const textureX = (Math.atan2(x, Math.sqrt(radius * radius - x * x - 1)) / (2 * Math.PI) + 0.5 + rotationRef.current.y / (2 * Math.PI)) * textureCanvas.width;
-                    ctx.drawImage(textureCanvas, textureX, 0, 1, textureCanvas.height, i, centerY - y, 1, 2 * y);
-                }
-            }
+      for (let i = 0; i < width; i++) {
+         const x = i - centerX;
+         if (x * x < radius * radius) {
+           const y = Math.sqrt(radius * radius - x * x);
+           // Map horizontal screen x to a texture X coordinate (wrap using modulo)
+           const angle = Math.atan2(x, Math.sqrt(radius * radius - x * x - 1));
+           let textureX = (angle / (2 * Math.PI) + 0.5 + rotationRef.current.y / (2 * Math.PI)) * textureCanvas.width;
+           // wrap textureX into [0, textureCanvas.width)
+           textureX = ((textureX % textureCanvas.width) + textureCanvas.width) % textureCanvas.width;
+           // draw single-pixel column from the texture
+           ctx.drawImage(textureCanvas, textureX, 0, 1, textureCanvas.height, i, centerY - y, 1, 2 * y);
+         }
+       }
             const gradient = ctx.createRadialGradient(centerX - radius * 0.3, centerY - radius * 0.3, radius * 0.1, centerX, centerY, radius);
             gradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
             gradient.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
@@ -775,6 +780,11 @@ const App: React.FC = () => {
         if (!isSphereDragging || !selectedObject || selectedObject.type === 'star') return;
         const deltaX = e.clientX - previousSphereMouseX;
         rotationRef.current.y += deltaX * 0.005;
+        // keep rotation manageable and allow clean looping
+        const TWO_PI = Math.PI * 2;
+        if (rotationRef.current.y > TWO_PI || rotationRef.current.y < -TWO_PI) {
+          rotationRef.current.y = rotationRef.current.y % TWO_PI;
+        }
         previousSphereMouseX = e.clientX;
     };
     
