@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { initClickSound } from './clickSound';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -9,6 +10,8 @@ if (!rootElement) {
 }
 
 const root = ReactDOM.createRoot(rootElement);
+// initialize click sounds globally
+initClickSound();
 root.render(
   <React.StrictMode>
     <App />

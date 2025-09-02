@@ -15,7 +15,7 @@ export const phases: Phase[] = [
   { name: 'Phase 4 (P4)', color: 'Purple', days: 116 },
 ];
 
-const stars: Star[] = [
+const redoStars: Star[] = [
   { 
     name: 'Spica', 
     color: '#87CEFA', 
@@ -40,7 +40,7 @@ const stars: Star[] = [
   },
 ];
 
-const planets: Planet[] = [
+const redoPlanets: Planet[] = [
       { 
         name: 'Zan', 
         color: '#6A0DAD', 
@@ -223,6 +223,49 @@ const factions = [
     }
 ];
 
+// Additional systems
+const solarStars: Star[] = [
+  {
+    name: 'Sun',
+    color: '#FFD700',
+    x: 0, y: 0,
+    radius: 30,
+    description: 'The Sun — star at the center of our Solar System.',
+    details: [ { label: 'Type', value: 'G-type Main-Sequence' } ]
+  }
+];
+
+const solarPlanets: Planet[] = [
+  { name: 'Mercury', color: '#BDBDBD', orbitScale: 50, orbitSpeed: 3.0, moons: [], moonScale: 0, description: 'A small, rocky planet close to the Sun.', details: [{label:'Status', value:'Airless'}] },
+  { name: 'Venus', color: '#F5DEB3', orbitScale: 80, orbitSpeed: 2.5, moons: [], moonScale: 0, description: 'A hot, dense atmosphere.', details: [{label:'Status', value:'Toxic Atmosphere'}] },
+  { name: 'Earth', color: '#2E8B57', orbitScale: 110, orbitSpeed: 2.0, moons: [ { name: 'Moon', parentPlanet: 'Earth', color: '#DDD', radius: 6, description: 'Earth\'s Moon.', details: [{label:'Type', value:'Natural Satellite'}] } ], moonScale: 12, description: 'Home to humanity (historic).', details: [{label:'Life', value:'Yes'}] },
+  { name: 'Mars', color: '#B22222', orbitScale: 140, orbitSpeed: 1.6, moons: [ { name: 'Phobos', parentPlanet: 'Mars', color: '#999', radius: 3, description: 'Mars moon Phobos.' , details: [] }, { name: 'Deimos', parentPlanet: 'Mars', color: '#AAA', radius: 2, description: 'Mars moon Deimos.', details: [] } ], moonScale: 8, description: 'The red planet.', details: [] },
+  { name: 'Jupiter', color: '#D2691E', orbitScale: 200, orbitSpeed: 1.0, moons: [ { name: 'Io', parentPlanet: 'Jupiter', color: '#F5DEB3', radius: 5, description: 'Volcanic moon Io.', details: [] } ], moonScale: 20, description: 'Gas giant.', details: [] },
+];
+
+const gargrantulaStars: Star[] = [
+  {
+    name: 'Gargantula',
+    color: '#000000',
+    x: 0, y: 0,
+    radius: 40,
+    description: 'A massive black hole — gravity dominates this system.',
+    details: [ { label: 'Type', value: 'Black Hole' } ]
+  }
+];
+
+const gargrantulaPlanets: Planet[] = [
+  { name: 'Nullic', color: '#070707', orbitScale: 120, orbitSpeed: 0.9, moons: [], moonScale: 0, description: 'A scorched world close to the event horizon.', details: [] },
+  { name: 'Abyss', color: '#110022', orbitScale: 180, orbitSpeed: 0.6, moons: [ { name: 'Shade', parentPlanet: 'Abyss', color: '#111', radius: 4, description: 'A dark, cold moon.', details: [] } ], moonScale: 10, description: 'A frozen world with exotic ices.', details: [] },
+  { name: 'Nox', color: '#2B2B3A', orbitScale: 260, orbitSpeed: 0.4, moons: [], moonScale: 0, description: 'A distant, tidally locked world.', details: [] }
+];
+
+const systems: Record<string, { stars: Star[]; planets: Planet[] }> = {
+  'Redoverse': { stars: redoStars, planets: redoPlanets },
+  'Solar System': { stars: solarStars, planets: solarPlanets },
+  'Gargantula (Black Hole System)': { stars: gargrantulaStars, planets: gargrantulaPlanets }
+};
+
 
 type ViewAngle = 'top' | 'perspective' | 'side';
 
@@ -264,10 +307,11 @@ const App: React.FC = () => {
   const sphereCanvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameId = useRef<number | null>(null);
   const [selectedObject, setSelectedObject] = useState<CelestialBody | null>(() => {
-    const zan = planets.find(p => p.name === 'Zan');
+    const zan = redoPlanets.find(p => p.name === 'Zan');
     return zan ? { ...zan, type: 'planet' } : null;
   });
   const [isCalendarOpen, setCalendarOpen] = useState(false);
+  const [isStoriesOpen, setStoriesOpen] = useState(false);
   const [zanianTime, setZanianTime] = useState<ZanianTime>({ day: 1, phase: 'Phase 1 (P1)', time: '00:00:00' });
   const appStartTime = useRef(Date.now());
   const rotationRef = useRef({ y: 0 });
@@ -275,6 +319,9 @@ const App: React.FC = () => {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [viewAngle, setViewAngle] = useState<ViewAngle>('top');
+  const [currentSystem, setCurrentSystem] = useState<string>('Redoverse');
+  const stars: Star[] = systems[currentSystem].stars;
+  const planets: Planet[] = systems[currentSystem].planets;
   const isPanningRef = useRef(false);
   const lastPanPosRef = useRef({ x: 0, y: 0 });
   const didPanRef = useRef(false);
@@ -943,8 +990,16 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-black text-gray-300 p-4 sm:p-8 font-sans flex flex-col items-center">
       <div className="max-w-6xl w-full rounded-2xl shadow-2xl bg-gray-950 border border-gray-800 overflow-hidden">
         <header className="text-center p-8 bg-black border-b border-gray-800">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-100 tracking-tight">The Redo Universe</h1>
-          <p className="mt-2 text-gray-500 text-lg italic">A new beginning, 34 light-years from Earth.</p>
+          <div className="flex items-center justify-between max-w-6xl mx-auto">
+            <div className="flex-1 text-left">
+              <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-100 tracking-tight">The Redo Universe</h1>
+              <p className="mt-2 text-gray-500 text-lg italic">A new beginning, 34 light-years from Earth.</p>
+            </div>
+            <div className="flex gap-3 ml-4 items-center">
+              <button onClick={() => setStoriesOpen(true)} className="bg-gray-800/60 hover:bg-gray-700/70 text-white font-semibold py-2 px-4 rounded-lg">Stories</button>
+              <button onClick={() => { setCurrentSystem('Redoverse'); setSelectedObject(null); }} className="bg-gray-800/40 hover:bg-gray-700/60 text-gray-300 font-medium py-2 px-3 rounded">Reset to Redoverse</button>
+            </div>
+          </div>
         </header>
 
         <main className="p-4 sm:p-8 space-y-12">
@@ -1044,25 +1099,38 @@ const App: React.FC = () => {
 
           <section className="border-b border-gray-800 pb-8">
              <h2 className="text-3xl font-bold text-gray-200 mb-4">Celestial Body Viewer</h2>
-              <div className="mb-6">
-                <label htmlFor="celestial-select" className="block text-gray-400 mb-2 font-semibold">Select a body to inspect:</label>
-                <select 
-                  id="celestial-select" 
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  value={selectedObject ? `${selectedObject.type}-${selectedObject.name}` : ''}
-                  onChange={handleSelectChange}
-                >
-                  <option value="">-- Select a Celestial Body --</option>
-                  <optgroup label="Stars">
-                    {stars.map(star => <option key={star.name} value={`star-${star.name}`}>{star.name}</option>)}
-                  </optgroup>
-                  <optgroup label="Planets">
-                    {planets.map(planet => <option key={planet.name} value={`planet-${planet.name}`}>{planet.name}</option>)}
-                  </optgroup>
-                  <optgroup label="Moons">
-                    {planets.flatMap(p => p.moons).map(moon => <option key={moon.name} value={`moon-${moon.name}`}>{moon.name} ({moon.parentPlanet})</option>)}
-                  </optgroup>
-                </select>
+              <div className="mb-6 grid md:grid-cols-2 gap-4 items-end">
+                <div>
+                  <label htmlFor="system-select" className="block text-gray-400 mb-2 font-semibold">Select Universe / System:</label>
+                  <select
+                    id="system-select"
+                    className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    value={currentSystem}
+                    onChange={(e) => setCurrentSystem(e.target.value)}
+                  >
+                    {Object.keys(systems).map(key => <option key={key} value={key}>{key}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="celestial-select" className="block text-gray-400 mb-2 font-semibold">Select a body to inspect:</label>
+                  <select 
+                    id="celestial-select" 
+                    className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    value={selectedObject ? `${selectedObject.type}-${selectedObject.name}` : ''}
+                    onChange={handleSelectChange}
+                  >
+                    <option value="">-- Select a Celestial Body --</option>
+                    <optgroup label="Stars">
+                      {stars.map(star => <option key={star.name} value={`star-${star.name}`}>{star.name}</option>)}
+                    </optgroup>
+                    <optgroup label="Planets">
+                      {planets.map(planet => <option key={planet.name} value={`planet-${planet.name}`}>{planet.name}</option>)}
+                    </optgroup>
+                    <optgroup label="Moons">
+                      {planets.flatMap(p => p.moons).map(moon => <option key={moon.name} value={`moon-${moon.name}`}>{moon.name} ({moon.parentPlanet})</option>)}
+                    </optgroup>
+                  </select>
+                </div>
               </div>
             <div className="grid md:grid-cols-2 gap-8">
                 <div>
@@ -1227,14 +1295,99 @@ const App: React.FC = () => {
             </p>
           </section>
 
+          <section className="border-t border-gray-800 pt-8">
+            <h2 className="text-3xl font-bold text-gray-200 mb-4">Nearby Catalog — Galaxies, Nebulae & Star Systems</h2>
+            <p className="text-gray-400 mb-6">Select a nearby object to learn more or jump to a known star system.</p>
+            <div className="grid md:grid-cols-3 gap-6">
+              {nearbyCatalog.map(item => (
+                <div key={item.name} className="bg-black/50 rounded-lg p-4 border border-gray-800">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="text-lg font-bold text-gray-200">{item.name}</h4>
+                      <p className="text-sm text-gray-400">{item.type} • {item.distanceLy ? `${item.distanceLy.toLocaleString()} ly` : '—'}</p>
+                    </div>
+                    {item.type === 'Star System' && (
+                      <button onClick={() => { if (systems[item.name]) setCurrentSystem(item.name); }} className="text-sm bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded">Jump</button>
+                    )}
+                  </div>
+                  <p className="mt-3 text-gray-400 text-sm">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
         </main>
       </div>
     </div>
     <Modal isOpen={isCalendarOpen} onClose={() => setCalendarOpen(false)}>
         <Calendar currentDay={zanianTime.day} />
     </Modal>
+    <Modal isOpen={isStoriesOpen} onClose={() => setStoriesOpen(false)}>
+      <div className="p-4">
+        <h3 className="text-2xl font-bold text-gray-200 mb-4">Stories — {currentSystem}</h3>
+        <p className="text-gray-400 mb-4">Select a planet or moon to view its story in the viewer.</p>
+        <div className="space-y-4">
+          {planets.map(p => (
+            <div key={p.name} className="bg-gray-900/30 p-3 rounded border border-gray-800">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="font-semibold text-gray-200">{p.name}</p>
+                  <p className="text-sm text-gray-400">{p.description}</p>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={() => { setSelectedObject({ ...p, type: 'planet' }); setStoriesOpen(false); }} className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded">View</button>
+                </div>
+              </div>
+              {p.moons && p.moons.length > 0 && (
+                <div className="mt-3 pl-2">
+                  <p className="text-sm text-gray-400 mb-1">Moons:</p>
+                  <div className="flex gap-2 flex-wrap">
+                    {p.moons.map(m => (
+                      <button key={m.name} onClick={() => { setSelectedObject({ ...m, type: 'moon' }); setStoriesOpen(false); }} className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-2 py-1 rounded text-sm">{m.name}</button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </Modal>
     </>
   );
 };
 
 export default App;
+// Nearby space catalog (galaxies, nebulae, star systems)
+const nearbyCatalog = [
+  {
+    type: 'Galaxy',
+    name: 'Andromeda',
+    distanceLy: 2537000,
+    description: 'Nearest large galaxy to the Milky Way.'
+  },
+  {
+    type: 'Nebula',
+    name: 'Orion Nebula',
+    distanceLy: 1344,
+    description: 'A bright emission nebula in the Orion constellation.'
+  },
+  {
+    type: 'Star System',
+    name: 'Solar System',
+    distanceLy: 0,
+    description: 'Home system of Earth, Sun and planets.'
+  },
+  {
+    type: 'Star System',
+    name: 'Redoverse',
+    distanceLy: 34,
+    description: 'The Redo system (Zan and companions).'
+  },
+  {
+    type: 'Star System',
+    name: 'Gargantula',
+    distanceLy: 120000,
+    description: 'A distant black hole system known as Gargantula.'
+  }
+];
