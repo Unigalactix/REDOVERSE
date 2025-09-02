@@ -70,9 +70,9 @@ Zan's society is segregated into distinct regions, each with its primary inhabit
 
 ## Development & Deployment
 
-This project is set up using Vite for a fast development experience and an optimized production build.
+### Local Development
 
-### Getting Started
+This project is set up using Vite for a fast development experience.
 
 1.  **Install Dependencies**: You'll need Node.js and npm installed. Open your terminal in the project directory and run:
     ```bash
@@ -83,28 +83,17 @@ This project is set up using Vite for a fast development experience and an optim
     npm run dev
     ```
 
-### Building for Production
+### Automated Deployment to GitHub Pages
 
-To create a production-ready version of the app, run:
-```bash
-npm run build
-```
-This command bundles all the code into a `dist` folder, which is optimized and ready for deployment.
+This project is configured for automated deployment to GitHub Pages using GitHub Actions. Every time you push a change to the `main` branch, a process will automatically build the project and deploy the result.
 
-### Deployment to GitHub Pages
+#### One-Time Setup
 
-You can host this project for free using GitHub Pages.
+You just need to enable GitHub Pages in your repository settings **once**:
 
-1.  **Build the Project**: Run `npm run build` to create the `dist` directory.
-
-2.  **Push to GitHub**: Make sure your project is a GitHub repository and you have pushed all your code. You may need to commit the `dist` directory if it's in your `.gitignore` file.
-
-3.  **Configure GitHub Pages**:
-    *   Go to your repository on GitHub.
-    *   Click on the **Settings** tab.
-    *   In the left sidebar, click on **Pages**.
-    *   Under "Build and deployment," for the **Source**, select **Deploy from a branch**.
-    *   For the **Branch**, select your main branch (e.g., `main` or `master`) and choose the `/dist` folder from the dropdown menu.
-    *   Click **Save**.
-
-4.  **Done!**: After a few minutes, your site will be live at the URL provided by GitHub Pages (e.g., `https://<your-username>.github.io/<your-repo-name>/`).
+1.  Go to your repository on GitHub.
+2.  Click on the **Settings** tab.
+3.  In the left sidebar, click on **Pages**.
+4.  Under "Build and deployment," for the **Source**, select **GitHub Actions**.
+5.  Push a change to your `main` branch to trigger the first deployment. You can monitor its progress in the "Actions" tab of your repository.
+6.  Once the deployment is successful, your site will be live at the URL provided in the Pages settings (e.g., `https://<your-username>.github.io/<your-repo-name>/`).

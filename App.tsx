@@ -272,6 +272,7 @@ const App: React.FC = () => {
   const appStartTime = useRef(Date.now());
   const rotationRef = useRef({ y: 0 });
   
+  const [isSimulating, setIsSimulating] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [viewAngle, setViewAngle] = useState<ViewAngle>('top');
@@ -880,6 +881,7 @@ const App: React.FC = () => {
 
     resizeCanvases();
     animate();
+    setIsSimulating(true);
 
     return () => {
       window.removeEventListener('resize', resizeCanvases);
@@ -935,295 +937,292 @@ const App: React.FC = () => {
   };
 
   const viewButtonClass = (view: ViewAngle) => 
-    `bg-gray-800/50 hover:bg-gray-700/70 text-white font-bold w-8 h-8 rounded-full transition-colors backdrop-blur-sm flex items-center justify-center ${viewAngle === view ? 'bg-gray-600/80' : ''}`;
+    `bg-gray-800/50 hover:bg-gray-700/70 text-white font-bold w-8 h-8 rounded-full transition-colors backdrop-blur-sm flex items-center justify-center ${viewAngle === view ? 'bg-purple-600/80' : ''}`;
 
+  const cardStyle = "bg-gray-900/40 backdrop-blur-md border border-gray-700/60 rounded-2xl shadow-xl p-6 sm:p-8 transition-all duration-300 hover:border-gray-600/80";
+  const subCardStyle = "bg-gray-800/30 rounded-lg p-6 border border-gray-700/50";
+  const titleStyle = "text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-400 mb-4 tracking-wide";
+  const subTitleStyle = "text-xl font-semibold text-gray-300";
 
   return (
     <>
-    <div className="min-h-screen bg-black text-gray-300 p-4 sm:p-8 font-sans">
-      <div className="max-w-7xl w-full mx-auto space-y-8">
-        <header className="text-center p-8 bg-gray-950 rounded-2xl border border-gray-800">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-100 tracking-tight">The Redo Universe</h1>
+    <div className="min-h-screen text-gray-300 p-4 sm:p-6 md:p-8 font-sans">
+      <div className="max-w-screen-2xl w-full mx-auto space-y-8">
+        <header className="text-center p-8 bg-gray-900/40 backdrop-blur-md border border-gray-700/60 rounded-2xl">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-400 tracking-tight">The Redo Universe</h1>
           <p className="mt-2 text-gray-500 text-lg italic">A new beginning, 34 light-years from Earth.</p>
         </header>
           
-          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
-            <h2 className="text-3xl font-bold text-gray-200 mb-4">Orbital Simulation</h2>
-            <p className="text-gray-400 mb-4">
-              Use your mouse to zoom and pan. Click on a sun, planet, or moon to learn more.
-            </p>
-            <div className="grid md:grid-cols-3 gap-8 items-start">
-              <div className="md:col-span-2 relative flex justify-center items-center bg-black rounded-lg overflow-hidden border border-gray-800">
-                <canvas ref={orbitCanvasRef} className="w-full h-auto max-h-[500px] aspect-video cursor-grab active:cursor-grabbing"></canvas>
-                 <div className="absolute top-3 right-3 flex flex-col gap-2">
-                    <button onClick={handleZoomIn} className="bg-gray-800/50 hover:bg-gray-700/70 text-white font-bold w-8 h-8 rounded-full transition-colors backdrop-blur-sm" title="Zoom In" aria-label="Zoom In">+</button>
-                    <button onClick={handleZoomOut} className="bg-gray-800/50 hover:bg-gray-700/70 text-white font-bold w-8 h-8 rounded-full transition-colors backdrop-blur-sm" title="Zoom Out" aria-label="Zoom Out">-</button>
-                    <button onClick={() => setViewAngle('top')} className={viewButtonClass('top')} title="Top-Down View">
-                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2z" /></svg>
-                    </button>
-                    <button onClick={() => setViewAngle('perspective')} className={viewButtonClass('perspective')} title="Perspective View">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                    </button>
-                    <button onClick={() => setViewAngle('side')} className={viewButtonClass('side')} title="Side-On View">
-                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
-                    </button>
-                    <button onClick={handleResetView} className="bg-gray-800/50 hover:bg-gray-700/70 text-white font-bold w-8 h-8 rounded-full transition-colors backdrop-blur-sm flex items-center justify-center" title="Reset View" aria-label="Reset View">
-                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5" />
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 9a9 9 0 0114.13-6.36M20 15a9 9 0 01-14.13 6.36" />
-                       </svg>
-                    </button>
-                </div>
-              </div>
-              <div className="bg-black/50 rounded-lg p-6 border border-gray-800 min-h-[300px]">
-                {selectedObject ? (
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-300">{selectedObject.name}</h3>
-                    <p className="mt-2 text-gray-400 italic">{selectedObject.description}</p>
-                    <ul className="mt-4 space-y-2 border-t border-gray-700 pt-4">
-                      {selectedObject.details.map(detail => (
-                        <li key={detail.label} className="flex justify-between">
-                          <span className="font-semibold text-gray-200">{detail.label}: </span>
-                          <span className="text-gray-500 text-right">{detail.value}</span>
-                        </li>
-                      ))}
-                       {selectedObject.type === 'moon' && (
-                         <li className="flex justify-between">
-                            <span className="font-semibold text-gray-200">Parent Planet: </span>
-                            <span className="text-gray-500 text-right">{selectedObject.parentPlanet}</span>
-                        </li>
-                       )}
-                    </ul>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center h-full">
-                    <p className="text-gray-600 italic text-center">Click a celestial body for details.</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
-
-          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
-            <h2 className="text-3xl font-bold text-gray-200 mb-4">Zan News Feed</h2>
-            <p className="text-gray-400 mb-6">Latest dispatches and temporal readings from across the planet.</p>
-             <div className="grid md:grid-cols-2 gap-8 items-start">
-                <div className="bg-black/50 rounded-lg p-6 border border-gray-800">
-                    <h3 className="text-xl font-semibold text-gray-300 text-center mb-2">System Clock</h3>
-                    <Clock time={zanianTime} />
-                    <div className="mt-6 flex justify-center">
-                        <button 
-                            onClick={() => setCalendarOpen(true)}
-                            className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 shadow-lg shadow-gray-800/20"
-                        >
-                            View Full Calendar
+        <main className="grid grid-cols-1 lg:grid-cols-10 gap-8">
+            <div className="lg:col-span-7 space-y-8">
+              <section className={cardStyle}>
+                <h2 className={titleStyle}>Orbital Simulation</h2>
+                <p className="text-gray-400 mb-6">
+                  Use your mouse to zoom and pan. Click on a sun, planet, or moon to learn more.
+                </p>
+                <div className="grid md:grid-cols-3 gap-8 items-start">
+                  <div className="md:col-span-2 relative flex justify-center items-center bg-black rounded-lg overflow-hidden border border-gray-800">
+                    {!isSimulating && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black z-10" aria-label="Loading simulation">
+                            <div className="w-12 h-12 border-4 border-gray-700 border-t-gray-300 rounded-full animate-spin" role="status"></div>
+                            <p className="mt-4 text-gray-400">Initializing Simulation...</p>
+                        </div>
+                    )}
+                    <canvas ref={orbitCanvasRef} className={`w-full h-auto max-h-[500px] aspect-video cursor-grab active:cursor-grabbing transition-opacity duration-500 ${isSimulating ? 'opacity-100' : 'opacity-0'}`}></canvas>
+                    <div className={`absolute top-3 right-3 flex flex-col gap-2 transition-opacity duration-500 ${isSimulating ? 'opacity-100' : 'opacity-0'}`}>
+                        <button onClick={handleZoomIn} className="bg-gray-800/50 hover:bg-gray-700/70 text-white font-bold w-8 h-8 rounded-full transition-colors backdrop-blur-sm" title="Zoom In" aria-label="Zoom In">+</button>
+                        <button onClick={handleZoomOut} className="bg-gray-800/50 hover:bg-gray-700/70 text-white font-bold w-8 h-8 rounded-full transition-colors backdrop-blur-sm" title="Zoom Out" aria-label="Zoom Out">-</button>
+                        <button onClick={() => setViewAngle('top')} className={viewButtonClass('top')} title="Top-Down View">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2z" /></svg>
+                        </button>
+                        <button onClick={() => setViewAngle('perspective')} className={viewButtonClass('perspective')} title="Perspective View">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                        </button>
+                        <button onClick={() => setViewAngle('side')} className={viewButtonClass('side')} title="Side-On View">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
+                        <button onClick={handleResetView} className="bg-gray-800/50 hover:bg-gray-700/70 text-white font-bold w-8 h-8 rounded-full transition-colors backdrop-blur-sm flex items-center justify-center" title="Reset View" aria-label="Reset View">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 9a9 9 0 0114.13-6.36M20 15a9 9 0 01-14.13 6.36" />
+                          </svg>
                         </button>
                     </div>
-                </div>
-                <div className="bg-black/50 rounded-lg p-6 border border-gray-800 min-h-[300px]">
-                  <h3 className="text-xl font-semibold text-gray-300 text-center mb-4">Recent Events</h3>
-                  <div className="space-y-4">
-                      <div className="border-l-2 border-purple-500 pl-3">
-                          <p className="font-semibold text-gray-300">Border Skirmish Reported</p>
-                          <p className="text-sm text-gray-400">Commander Kael's Legionnaires exchanged fire with a Sun Eater patrol near the P2/P3 border. Casualties are unconfirmed. Tensions remain high.</p>
+                  </div>
+                  <div className={`${subCardStyle} min-h-[300px]`}>
+                    {selectedObject ? (
+                      <div>
+                        <h3 className="text-2xl font-bold text-gray-200">{selectedObject.name}</h3>
+                        <p className="mt-2 text-gray-400 italic">{selectedObject.description}</p>
+                        <ul className="mt-4 space-y-2 border-t border-gray-700 pt-4">
+                          {selectedObject.details.map(detail => (
+                            <li key={detail.label} className="flex justify-between">
+                              <span className="font-semibold text-gray-300">{detail.label}: </span>
+                              <span className="text-gray-500 text-right">{detail.value}</span>
+                            </li>
+                          ))}
+                          {selectedObject.type === 'moon' && (
+                            <li className="flex justify-between">
+                                <span className="font-semibold text-gray-300">Parent Planet: </span>
+                                <span className="text-gray-500 text-right">{selectedObject.parentPlanet}</span>
+                            </li>
+                          )}
+                        </ul>
                       </div>
-                      <div className="border-l-2 border-blue-500 pl-3">
-                          <p className="font-semibold text-gray-300">Moon Coalition Summit Announced</p>
-                          <p className="text-sm text-gray-400">Chieftain Zorgan has called a meeting of the four moon tribes on Agape. Sources suggest Lyra's diplomatic efforts are gaining traction, pushing for a unified defense strategy.</p>
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <p className="text-gray-600 italic text-center">Click a celestial body for details.</p>
                       </div>
-                      <div className="border-l-2 border-red-500 pl-3">
-                          <p className="font-semibold text-gray-300">Hades Ocean Anomaly</p>
-                          <p className="text-sm text-gray-400">Zanian sensors have detected unusual energy readings from the deep trenches. The Tide-Speaker has not responded to inquiries. The Trident Guard has increased patrols.</p>
-                      </div>
+                    )}
                   </div>
                 </div>
-             </div>
-          </section>
+              </section>
 
-          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
-             <h2 className="text-3xl font-bold text-gray-200 mb-4">Celestial Body Viewer</h2>
-              <div className="mb-6">
-                <label htmlFor="celestial-select" className="block text-gray-400 mb-2 font-semibold">Select a body to inspect:</label>
-                <select 
-                  id="celestial-select" 
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  value={selectedObject ? `${selectedObject.type}-${selectedObject.name}` : ''}
-                  onChange={handleSelectChange}
-                >
-                  <option value="">-- Select a Celestial Body --</option>
-                  <optgroup label="Stars">
-                    {stars.map(star => <option key={star.name} value={`star-${star.name}`}>{star.name}</option>)}
-                  </optgroup>
-                  <optgroup label="Planets">
-                    {planets.map(planet => <option key={planet.name} value={`planet-${planet.name}`}>{planet.name}</option>)}
-                  </optgroup>
-                  <optgroup label="Moons">
-                    {planets.flatMap(p => p.moons).map(moon => <option key={moon.name} value={`moon-${moon.name}`}>{moon.name} ({moon.parentPlanet})</option>)}
-                  </optgroup>
-                </select>
-              </div>
-            <div className="grid md:grid-cols-2 gap-8">
+              <section className={cardStyle}>
+                <h2 className={titleStyle}>Celestial Body Viewer</h2>
+                  <div className="mb-6">
+                    <label htmlFor="celestial-select" className="block text-gray-400 mb-2 font-semibold">Select a body to inspect:</label>
+                    <select 
+                      id="celestial-select" 
+                      className="w-full bg-gray-900/80 border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={selectedObject ? `${selectedObject.type}-${selectedObject.name}` : ''}
+                      onChange={handleSelectChange}
+                    >
+                      <option value="">-- Select a Celestial Body --</option>
+                      <optgroup label="Stars">
+                        {stars.map(star => <option key={star.name} value={`star-${star.name}`}>{star.name}</option>)}
+                      </optgroup>
+                      <optgroup label="Planets">
+                        {planets.map(planet => <option key={planet.name} value={`planet-${planet.name}`}>{planet.name}</option>)}
+                      </optgroup>
+                      <optgroup label="Moons">
+                        {planets.flatMap(p => p.moons).map(moon => <option key={moon.name} value={`moon-${moon.name}`}>{moon.name} ({moon.parentPlanet})</option>)}
+                      </optgroup>
+                    </select>
+                  </div>
+                <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 id="cross-section-title" className={`${subTitleStyle} text-center mb-2`}>Geographical Layout</h3>
+                        <div className="flex justify-center items-center bg-black rounded-lg overflow-hidden border border-gray-800 aspect-square">
+                            <canvas ref={internalCanvasRef} className="w-full h-full"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 className={`${subTitleStyle} text-center mb-2`}>3D Sphere View</h3>
+                        <div className="flex justify-center items-center bg-black rounded-lg overflow-hidden border border-gray-800 aspect-square">
+                            <canvas ref={sphereCanvasRef} className={`w-full h-full ${selectedObject?.type !== 'star' ? 'cursor-grab active:cursor-grabbing' : ''}`}></canvas>
+                        </div>
+                        {selectedObject?.type !== 'star' && <p className="text-center text-gray-500 text-sm mt-2">Click and drag to rotate.</p> }
+                    </div>
+                </div>
+              </section>
+
+              <section className={cardStyle}>
+                <h2 className={titleStyle}>Economy & Currency</h2>
+                <p className="text-gray-400 mb-6">The Zanian economy is a complex system of advanced digital transactions, resource bartering, and interstellar trade, all loosely tied together by the official currency: the <span className="font-bold text-white">Lumin (L)</span>. A unit of crystallized energy, Lumin is minted and controlled by the Zan Zanians, creating a major point of contention across the planet.</p>
+                <div className="grid md:grid-cols-3 gap-8">
+                    <div className={subCardStyle}>
+                        <h3 className={`${subTitleStyle} mb-2`}>The Zan Hegemony (Cloned)</h3>
+                        <p className="text-gray-400">The Zan Zanians operate a sophisticated, fully digital economy. Lumin exists as encrypted data, used for everything from scientific funding to military contracts. Their control over the Lumin mint gives them immense economic leverage over the other factions.</p>
+                    </div>
+                    <div className={subCardStyle}>
+                        <h3 className={`${subTitleStyle} mb-2`}>The Death Barter System</h3>
+                        <p className="text-gray-400">The Death Zanians reject the "unnatural" digital currency of the clones. Their economy is based on raw materials, scavenged technology, and military might. They primarily rely on a robust bartering system, valuing tangible assets over digital credits.</p>
+                    </div>
+                    <div className={subCardStyle}>
+                        <h3 className={`${subTitleStyle} mb-2`}>The Moon Coalition</h3>
+                        <p className="text-gray-400">The moons are rich in unique minerals essential for Zanian technology. The tribes trade these resources for refined goods, tech, and Lumin. This economic dependence is a constant source of political tension and a key motivator for seeking greater autonomy.</p>
+                    </div>
+                </div>
+              </section>
+              
+              <section className={cardStyle}>
+                <h2 className={titleStyle}>Key Figures & Factions</h2>
+                <div className="grid md:grid-cols-2 gap-8 mb-8">
+                  <div className={subCardStyle}>
+                    <div className="flex items-center gap-4 mb-3">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-purple-400">
+                            <path d="M12 2L15.09 8.09L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.09L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M12 2V22" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2"/>
+                            <path d="M2 12H22" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2"/>
+                        </svg>
+                        <h3 className="text-2xl font-bold text-gray-200">GOD - Leader of the Cloned</h3>
+                    </div>
+                    <p className="text-gray-400">The first experimental womb clone from 'Project Recreation.' Calm, trained, and erudite, God guides the cloned population of the Zan Region. He possesses a supernatural consciousness of past, present, and future, and believes in using knowledge to create a better world for all.</p>
+                  </div>
+                  <div className={subCardStyle}>
+                    <div className="flex items-center gap-4 mb-3">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-red-400">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 11-11.32 0L12 2.69z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M13 15l-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                            <path d="M9 15l4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                        <h3 className="text-2xl font-bold text-gray-200">RAK - King of the Natural Born</h3>
+                    </div>
+                    <p className="text-gray-400">The first naturally born human on Zan. His genetics were altered by the planet's unique radiation. Stormy and driven by instinct, Rak leads the Death Zanians. He is a charismatic antagonist who formed a cult to destroy the Red Sun, believing it to be a threat.</p>
+                  </div>
+                </div>
+
                 <div>
-                    <h3 id="cross-section-title" className="text-xl font-semibold text-center text-gray-300 mb-2">Geographical Layout</h3>
-                     <div className="flex justify-center items-center bg-black rounded-lg overflow-hidden border border-gray-800 aspect-square">
-                        <canvas ref={internalCanvasRef} className="w-full h-full"></canvas>
-                    </div>
-                </div>
-                 <div>
-                    <h3 className="text-xl font-semibold text-center text-gray-300 mb-2">3D Sphere View</h3>
-                    <div className="flex justify-center items-center bg-black rounded-lg overflow-hidden border border-gray-800 aspect-square">
-                        <canvas ref={sphereCanvasRef} className={`w-full h-full ${selectedObject?.type !== 'star' ? 'cursor-grab active:cursor-grabbing' : ''}`}></canvas>
-                    </div>
-                    {selectedObject?.type !== 'star' && <p className="text-center text-gray-500 text-sm mt-2">Click and drag to rotate.</p> }
-                </div>
-            </div>
-          </section>
-
-          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
-            <h2 className="text-3xl font-bold text-gray-200 mb-4">Economy & Currency</h2>
-            <p className="text-gray-400 mb-6">The Zanian economy is a complex system of advanced digital transactions, resource bartering, and interstellar trade, all loosely tied together by the official currency: the <span className="font-bold text-white">Lumin (L)</span>. A unit of crystallized energy, Lumin is minted and controlled by the Zan Zanians, creating a major point of contention across the planet.</p>
-            <div className="grid md:grid-cols-3 gap-8">
-                <div className="bg-black/50 rounded-lg p-6 border border-gray-800">
-                    <h3 className="text-xl font-semibold text-gray-300 mb-2">The Zan Hegemony (Cloned)</h3>
-                    <p className="text-gray-400">The Zan Zanians operate a sophisticated, fully digital economy. Lumin exists as encrypted data, used for everything from scientific funding to military contracts. Their control over the Lumin mint gives them immense economic leverage over the other factions.</p>
-                </div>
-                <div className="bg-black/50 rounded-lg p-6 border border-gray-800">
-                    <h3 className="text-xl font-semibold text-gray-300 mb-2">The Death Barter System (Natural Born)</h3>
-                    <p className="text-gray-400">The Death Zanians reject the "unnatural" digital currency of the clones. Their economy is based on raw materials, scavenged technology, and military might. They primarily rely on a robust bartering system, valuing tangible assets over digital credits.</p>
-                </div>
-                <div className="bg-black/50 rounded-lg p-6 border border-gray-800">
-                    <h3 className="text-xl font-semibold text-gray-300 mb-2">The Moon Coalition</h3>
-                    <p className="text-gray-400">The moons are rich in unique minerals essential for Zanian technology. The tribes trade these resources for refined goods, tech, and Lumin. This economic dependence is a constant source of political tension and a key motivator for seeking greater autonomy.</p>
-                </div>
-            </div>
-          </section>
-          
-          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
-            <h2 className="text-3xl font-bold text-gray-200 mb-4">Key Figures & Factions</h2>
-            <div className="grid md:grid-cols-2 gap-8 mb-8">
-              <div className="bg-black/50 rounded-lg p-6 border border-gray-800">
-                <div className="flex items-center gap-4 mb-3">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-400">
-                        <path d="M12 2L15.09 8.09L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.09L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M12 2V22" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2"/>
-                        <path d="M2 12H22" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2"/>
-                    </svg>
-                    <h3 className="text-2xl font-bold text-gray-300">GOD - Leader of the Cloned</h3>
-                </div>
-                <p className="text-gray-400">The first experimental womb clone from 'Project Recreation.' Calm, trained, and erudite, God guides the cloned population of the Zan Region. He possesses a supernatural consciousness of past, present, and future, and believes in using knowledge to create a better world for all.</p>
-              </div>
-               <div className="bg-black/50 rounded-lg p-6 border border-gray-800">
-                <div className="flex items-center gap-4 mb-3">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-400">
-                        <path d="M12 2.69l5.66 5.66a8 8 0 11-11.32 0L12 2.69z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M13 15l-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                        <path d="M9 15l4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                    </svg>
-                    <h3 className="text-2xl font-bold text-gray-300">RAK - King of the Natural Born</h3>
-                </div>
-                <p className="text-gray-400">The first naturally born human on Zan. His genetics were altered by the planet's unique radiation. Stormy and driven by instinct, Rak leads the Death Zanians. He is a charismatic antagonist who formed a cult to destroy the Red Sun, believing it to be a threat.</p>
-              </div>
-            </div>
-
-            <div>
-                <h3 className="text-2xl font-bold text-gray-300 mb-6 border-t border-gray-800 pt-6">Factions & Military Structure</h3>
-                <div className="space-y-8">
-                    {factions.map(faction => (
-                        <div key={faction.name} className="bg-black/50 rounded-lg p-6 border border-gray-800">
-                            <h4 className="text-xl font-bold text-gray-200">{faction.name}</h4>
-                            <p className="text-gray-400 mt-2 mb-4">{faction.description}</p>
-                            <div className="border-t border-gray-700 pt-4 space-y-2">
-                                {faction.characters.map(char => (
-                                    <div key={char.name}>
-                                        <button onClick={() => handleCharacterClick(char.name)} className="w-full text-left">
-                                            <div className="flex justify-between items-center p-2 rounded-md hover:bg-gray-800/60 transition-colors">
-                                                <div>
-                                                    <p className="font-semibold text-gray-300">{char.name}</p>
-                                                    <p className="text-sm text-gray-500">{char.role}</p>
+                    <h3 className="text-2xl font-bold text-gray-300 mb-6 border-t border-gray-700/60 pt-6">Factions & Military Structure</h3>
+                    <div className="space-y-8">
+                        {factions.map(faction => (
+                            <div key={faction.name} className={subCardStyle}>
+                                <h4 className="text-xl font-bold text-gray-200">{faction.name}</h4>
+                                <p className="text-gray-400 mt-2 mb-4">{faction.description}</p>
+                                <div className="border-t border-gray-700 pt-4 space-y-2">
+                                    {faction.characters.map(char => (
+                                        <div key={char.name}>
+                                            <button onClick={() => handleCharacterClick(char.name)} className="w-full text-left">
+                                                <div className="flex justify-between items-center p-2 rounded-md hover:bg-gray-700/40 transition-colors">
+                                                    <div>
+                                                        <p className="font-semibold text-gray-200">{char.name}</p>
+                                                        <p className="text-sm text-gray-500">{char.role}</p>
+                                                    </div>
+                                                    <svg className={`w-5 h-5 text-gray-500 transform transition-transform duration-300 ${expandedCharacter === char.name ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                    </svg>
                                                 </div>
-                                                <svg className={`w-5 h-5 text-gray-500 transform transition-transform duration-300 ${expandedCharacter === char.name ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                </svg>
-                                            </div>
-                                        </button>
-                                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedCharacter === char.name ? 'max-h-96' : 'max-h-0'}`}>
-                                            <div className="p-4 mt-1 bg-gray-900/50 rounded-b-md border-l-2 border-gray-700">
-                                                <p className="text-gray-400 text-sm italic">{char.backstory}</p>
+                                            </button>
+                                            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedCharacter === char.name ? 'max-h-96' : 'max-h-0'}`}>
+                                                <div className="p-4 mt-1 bg-black/30 rounded-b-md border-l-2 border-gray-700">
+                                                    <p className="text-gray-400 text-sm italic">{char.backstory}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
+              </section>
             </div>
-          </section>
+            
+            <aside className="lg:col-span-3 space-y-8">
+              <section className={cardStyle}>
+                <h2 className={titleStyle}>Zan News Feed</h2>
+                <div className="space-y-8">
+                    <div>
+                        <h3 className={`${subTitleStyle} text-center mb-4`}>System Clock</h3>
+                        <Clock time={zanianTime} />
+                        <div className="mt-6 flex justify-center">
+                            <button 
+                                onClick={() => setCalendarOpen(true)}
+                                className="bg-purple-600/50 hover:bg-purple-600/80 border border-purple-500/80 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-lg shadow-purple-900/40 hover:shadow-purple-700/60"
+                            >
+                                View Full Calendar
+                            </button>
+                        </div>
+                    </div>
+                    <div className={`${subCardStyle}`}>
+                      <h3 className={`${subTitleStyle} text-center mb-4`}>Recent Events</h3>
+                      <div className="space-y-4">
+                          <div className="border-l-2 border-purple-500 pl-3">
+                              <p className="font-semibold text-gray-200">Border Skirmish Reported</p>
+                              <p className="text-sm text-gray-400">Commander Kael's Legionnaires exchanged fire with a Sun Eater patrol near the P2/P3 border. Casualties are unconfirmed. Tensions remain high.</p>
+                          </div>
+                          <div className="border-l-2 border-blue-500 pl-3">
+                              <p className="font-semibold text-gray-200">Moon Coalition Summit</p>
+                              <p className="text-sm text-gray-400">Chieftain Zorgan has called a meeting of the four moon tribes on Agape. Sources suggest Lyra's diplomatic efforts are gaining traction, pushing for a unified defense strategy.</p>
+                          </div>
+                          <div className="border-l-2 border-red-500 pl-3">
+                              <p className="font-semibold text-gray-200">Hades Ocean Anomaly</p>
+                              <p className="text-sm text-gray-400">Zanian sensors have detected unusual energy readings from the deep trenches. The Tide-Speaker has not responded to inquiries. The Trident Guard has increased patrols.</p>
+                          </div>
+                      </div>
+                    </div>
+                </div>
+              </section>
 
-          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
-            <h2 className="text-3xl font-bold text-gray-200 mb-4">Zan's Societal Structure & Regions</h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xl font-semibold text-gray-300">Regions & Inhabitants</h3>
-                <ul className="mt-2 text-gray-400 list-disc list-inside space-y-2">
-                  <li><span className="font-bold text-white">Zan Zanians (Cloned):</span> Inhabit the Zan Region. They are created via 'Project Recreation' and possess enhanced knowledge and immunity, leading to a society with advanced technology and control over the economy.</li>
-                  <li><span className="font-bold text-white">Death Zanians (Natural Born):</span> Reside in the Death Region. As naturally born beings, they have deep genetic knowledge but lower immunity, relying on a resource-based economy and their formidable defense systems.</li>
-                  <li><span className="font-bold text-white">Aqua & Hades Zanians:</span> The original bioforms dwell in the Hades Ocean. A sub-group, the Hades Zanians, live deep underwater, controlling all water transport and remaining neutral between God and Rak.</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-300">Moons & Hybrids</h3>
-                <ul className="mt-2 text-gray-400 list-disc list-inside space-y-1">
-                  <li>The moons of Zan are home to mixed tribes: <span className="font-bold text-white">Agape, Ales, Alyx, and Andel</span>.</li>
-                  <li>Hybrid Aqua beings live along the <span className="font-bold text-white">Zan region's coast</span>.</li>
-                  <li>Pure Aqua breeds are found along the <span className="font-bold text-white">Death region's coast</span>.</li>
-                </ul>
-              </div>
-            </div>
-          </section>
-          
-          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
-            <h2 className="text-3xl font-bold text-gray-200 mb-4">Zan's Celestial & Temporal Structure</h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xl font-semibold text-gray-300">Year Loop Structure</h3>
-                <p className="mt-2 text-gray-400">
-                  The Zanian year is a cycle of <span className="text-white font-bold">{yearDuration}</span> days. Each day lasts
-                  <span className="text-white font-bold">{dayDuration}</span> hours, with varying durations of daylight and darkness.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-300">Unique Periods</h3>
-                <p className="mt-2 text-gray-400">
-                  A unique period called <span className="font-bold text-white">Darknight</span> marks the transition between years. It lasts for 6 days, consisting of the last 3 days of Phase 4 and the first 3 days of Phase 1.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <section className="bg-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 sm:p-8">
-            <h2 className="text-3xl font-bold text-gray-200 mb-4">Other Planets in the Redo Universe</h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xl font-semibold text-gray-300">Casa</h3>
-                <ul className="mt-2 text-gray-400 list-disc list-inside space-y-1">
-                  <li>Features three moons.</li>
-                  <li>Bioforms yet to be discovered.</li>
-                  <li>Explored by Zanians.</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-300">Judo & Flack</h3>
-                <ul className="mt-2 text-gray-400 list-disc list-inside space-y-1">
-                  <li><span className="font-bold text-white">Judo</span>: Lacks moons, with no known life forms.</li>
-                  <li><span className="font-bold text-white">Flack</span>: The smallest and last planet, with no moons and inhospitable for life.</li>
-                </ul>
-              </div>
-            </div>
-            <p className="mt-4 text-gray-400">
-              Casa and Judo are considered "twin planets," similar in size and appearance.
-            </p>
-          </section>
+              <section className={cardStyle}>
+                <h2 className={titleStyle}>Zan's Societal Structure & Regions</h2>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className={subTitleStyle}>Regions & Inhabitants</h3>
+                    <ul className="mt-2 text-gray-400 list-disc list-inside space-y-2">
+                      <li><span className="font-bold text-white">Zan Zanians (Cloned):</span> Inhabit the Zan Region. They are created via 'Project Recreation' and possess enhanced knowledge and immunity.</li>
+                      <li><span className="font-bold text-white">Death Zanians (Natural Born):</span> Reside in the Death Region. As naturally born beings, they have deep genetic knowledge but lower immunity.</li>
+                      <li><span className="font-bold text-white">Aqua & Hades Zanians:</span> The original bioforms dwell in the Hades Ocean, remaining neutral between God and Rak.</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className={subTitleStyle}>Moons & Hybrids</h3>
+                    <ul className="mt-2 text-gray-400 list-disc list-inside space-y-1">
+                      <li>The moons of Zan are home to mixed tribes: <span className="font-bold text-white">Agape, Ales, Alyx, and Andel</span>.</li>
+                      <li>Hybrid Aqua beings live along the <span className="font-bold text-white">Zan region's coast</span>.</li>
+                      <li>Pure Aqua breeds are found along the <span className="font-bold text-white">Death region's coast</span>.</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+              
+              <section className={cardStyle}>
+                <h2 className={titleStyle}>Universe Lore</h2>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className={subTitleStyle}>Year Loop Structure</h3>
+                    <p className="mt-2 text-gray-400">
+                      The Zanian year is a cycle of <span className="text-white font-bold">{yearDuration}</span> days. Each day lasts
+                      <span className="text-white font-bold">{dayDuration}</span> hours, with varying durations of daylight and darkness.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className={subTitleStyle}>Darknight Period</h3>
+                    <p className="mt-2 text-gray-400">
+                      A unique period called <span className="font-bold text-white">Darknight</span> marks the transition between years. It lasts for 6 days, consisting of the last 3 days of Phase 4 and the first 3 days of Phase 1.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className={subTitleStyle}>Other Planets</h3>
+                    <p className="mt-2 text-gray-400">
+                        Beyond Zan, the system contains the twin planets <span className="font-bold text-white">Casa</span> and <span className="font-bold text-white">Judo</span>, and the small, inhospitable rock, <span className="font-bold text-white">Flack</span>. Zanian explorers continue to investigate these worlds for resources and signs of life.
+                    </p>
+                  </div>
+                </div>
+              </section>
+            </aside>
+        </main>
       </div>
     </div>
     <Modal isOpen={isCalendarOpen} onClose={() => setCalendarOpen(false)}>
