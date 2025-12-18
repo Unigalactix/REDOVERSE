@@ -2,6 +2,50 @@
 
 Welcome to the Redo Universe, a new beginning for life and civilization located 34 light-years from Earth. This name was chosen by human migrants to symbolize a second chance. The system is characterized by its unique dual-star celestial mechanics, diverse planets, and intricate societal structures.
 
+## Getting Started
+
+### Prerequisites
+- Node.js (v20 or higher recommended)
+- npm
+
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/Unigalactix/REDOVERSE.git
+
+# Navigate to the project directory
+cd REDOVERSE
+
+# Install dependencies
+npm install
+```
+
+### Development
+```bash
+# Start the development server
+npm run dev
+```
+The application will be available at `http://localhost:5173` (or the port shown in your terminal).
+
+### Building
+```bash
+# Build for production
+npm run build
+```
+The built files will be in the `dist` directory.
+
+### Preview Production Build
+```bash
+# Preview the production build locally
+npm run preview
+```
+
+### Deployment
+This project is configured to deploy to GitHub Pages:
+```bash
+npm run deploy
+```
+
 ## The Planetary System
 
 The entire system revolves around two central stars in a unique lemniscate (figure-eight) orbit.
