@@ -46,6 +46,8 @@ This project is configured to deploy to GitHub Pages:
 npm run deploy
 ```
 
+For GitHub Actions deployment, enable Pages in the repository settings and use the provided workflow in [.github/workflows/deploy.yml](/workspaces/REDOVERSE/.github/workflows/deploy.yml). The workflow now builds with the correct project-site base path for this repository.
+
 ## The Planetary System
 
 The entire system revolves around two central stars in a unique lemniscate (figure-eight) orbit.
