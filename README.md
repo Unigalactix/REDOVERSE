@@ -46,7 +46,17 @@ This project is configured to deploy to GitHub Pages:
 npm run deploy
 ```
 
-For GitHub Actions deployment, enable Pages in the repository settings and use the provided workflow in [.github/workflows/deploy.yml](/workspaces/REDOVERSE/.github/workflows/deploy.yml). The workflow now builds with the correct project-site base path for this repository.
+For GitHub Actions deployment, enable Pages in the repository settings and use the provided workflow in [.github/workflows/deploy.yml](/workspaces/REDOVERSE/.github/workflows/deploy.yml).
+
+The workflow expects a repository secret named `GH_PAGES_DEPLOY_TOKEN`:
+
+```text
+1. Create a GitHub Personal Access Token with repository write access.
+2. Add it to this repository's Actions secrets as GH_PAGES_DEPLOY_TOKEN.
+3. Re-run the Pages deployment workflow.
+```
+
+The workflow builds with the correct project-site base path for this repository and deploys the `dist` folder to the `gh-pages` branch using that token.
 
 ## The Planetary System
 
