@@ -4,49 +4,53 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - docs/**
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: 20
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
 
       - name: Build
         env:
           VITE_BASE: /${{ github.event.repository.name }}/
         run: npm run build
 
-      - name: Publish site to docs on main
-        run: |
-          rm -rf docs
-          mkdir -p docs
-          rsync -a --delete dist/ docs/
-          touch docs/.nojekyll
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
 
-          git config user.email "actions@github.com"
-          git config user.name "github-actions[bot]"
-          git add -A docs
-
-          if git diff --cached --quiet; then
-            echo "No docs changes to commit."
-            exit 0
-          fi
-
-          git commit -m "chore: update GitHub Pages site [skip ci]"
-          git push origin HEAD:main
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

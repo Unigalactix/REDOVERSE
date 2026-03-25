@@ -41,23 +41,16 @@ npm run preview
 ```
 
 ### Deployment
-This project is configured to deploy to GitHub Pages:
-```bash
-npm run deploy
-```
+This project is configured to deploy to GitHub Pages through GitHub Actions using [.github/workflows/deploy.yml](/workspaces/REDOVERSE/.github/workflows/deploy.yml).
 
-For GitHub Actions deployment, enable Pages in the repository settings and use the provided workflow in [.github/workflows/deploy.yml](/workspaces/REDOVERSE/.github/workflows/deploy.yml).
-
-This setup does not need a Personal Access Token. It uses the built-in `GITHUB_TOKEN` to build the site and commit the generated output into the `docs` folder on the `main` branch.
+This setup does not need a Personal Access Token, does not need a `gh-pages` branch, and does not need a `docs` folder commit flow. It uses the standard GitHub Pages artifact deployment actions.
 
 ```text
-1. In GitHub Pages settings, keep the source as Deploy from a branch.
-2. Set the branch to main and the folder to /docs.
-3. In Settings > Actions > General, set Workflow permissions to Read and write permissions.
-4. Push to main or re-run the deployment workflow.
+1. In GitHub Pages settings, set the source to GitHub Actions.
+2. Push to main or run the workflow manually from the Actions tab.
 ```
 
-The workflow builds with the correct project-site base path for this repository and publishes the generated site from `docs/` on `main` using the repository token.
+The workflow builds with the correct project-site base path for this repository and deploys the generated `dist` output directly to GitHub Pages.
 
 ## The Planetary System
 
